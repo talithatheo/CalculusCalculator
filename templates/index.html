@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kalkulus</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="calculator-screen" id="expression">
+        <div class="calculator-keys">
+            <button type="button" class="function" onclick="appendValue('sin(x)')">sin</button>
+            <button type="button" class="function" onclick="appendValue('cos(x)')">cos</button>
+            <button type="button" class="function" onclick="appendValue('tan(x)')">tan</button>
+            <button type="button" class="operator" onclick="appendValue('+')">+</button>
+            <button type="button" class="operator" onclick="appendValue('-')">-</button>
+            <button type="button" class="operator" onclick="appendValue('*')">*</button>
+            <button type="button" class="operator" onclick="appendValue('/')">/</button>
+            <button type="button" class="operator" onclick="appendValue('**')">^</button>
+            <button type="button" class="all-clear" onclick="clearScreen()">AC</button>
+            <button type="button" class="equal-sign" onclick="calculate()">=</button>
+        </div>
+    </div>
+    <script>
+        function appendValue(value) {
+            document.getElementById('expression').value += value;
+        }
+
+        function clearScreen() {
+            document.getElementById('expression').value = '';
+        }
+
+        function calculate() {
+            const expression = document.getElementById('expression').value;
+
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'expression': expression
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('expression').value = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
