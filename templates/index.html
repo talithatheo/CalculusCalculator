@@ -119,9 +119,25 @@
             <button type="button" class="operator" onclick="appendValue('e')">e</button>
             <button type="button" class="all-clear" onclick="clearScreen()">AC</button>
             <button type="button" class="equal-sign" onclick="calculate()">=</button>
+
+            <!-- Numeric Buttons -->
+            <button type="button" onclick="appendValue('1')">1</button>
+            <button type="button" onclick="appendValue('2')">2</button>
+            <button type="button" onclick="appendValue('3')">3</button>
+            <button type="button" onclick="appendValue('4')">4</button>
+            <button type="button" onclick="appendValue('5')">5</button>
+            <button type="button" onclick="appendValue('6')">6</button>
+            <button type="button" onclick="appendValue('7')">7</button>
+            <button type="button" onclick="appendValue('8')">8</button>
+            <button type="button" onclick="appendValue('9')">9</button>
+            <button type="button" onclick="appendValue('0')">0</button>
+            <button type="button" onclick="appendValue('.')">.</button>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
     <script>
+        var socket = io.connect('http://showcase.ittsby.id:11008');
+
         function appendValue(value) {
             const screen = document.getElementById('expression');
             screen.value += value;
@@ -134,24 +150,12 @@
         function calculate() {
             const expression = document.getElementById('expression').value;
 
-            fetch('/calculate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    'expression': expression
-                })
-            })
-            .then(response => response.json()) // Assume the server returns JSON
-            .then(data => {
-                document.getElementById('expression').value = data.result;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('expression').value = 'Error';
-            });
+            socket.emit('calculate_expression', {expression: expression});
         }
+
+        socket.on('result', function(data) {
+            document.getElementById('expression').value = data.result;
+        });
     </script>
 </body>
 </html>
