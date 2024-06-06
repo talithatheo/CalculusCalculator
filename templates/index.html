@@ -5,26 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalkulator Kalkulus</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #3c3744; /* Warna abu-abu tua sebagai latar belakang */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .calculator {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 360px; /* Ukuran lebih kecil */
+            background-color: #fff; /* Latar belakang kalkulator putih */
+            border: 5px solid #e1e1e1; /* Tambahkan border solid yang lebih tebal */
+            padding: 20px;
+        }
+
+        .calculator-screen {
+            width: 100%;
+            height: 60px; /* Lebih kecil dari sebelumnya */
+            border: none;
+            background-color: #ffe0f0; /* Warna pink lembut */
+            color: #555; /* Warna teks yang lebih lembut */
+            text-align: right;
+            padding: 10px;
+            font-size: 2em; /* Ukuran teks disesuaikan */
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .calculator-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            height: 48px; /* Tombol lebih kecil */
+            border: none;
+            background-color: #f9c6d9; /* Warna tombol pink */
+            font-size: 1em; /* Ukuran font yang lebih kecil */
+            color: #333;
+            cursor: pointer;
+            border-radius: 5px; /* Membuat tombol lebih bulat */
+        }
+
+        button:hover {
+            background-color: #f7a8c8; /* Warna hover yang lebih gelap */
+        }
+
+        .operator, .function, .equal-sign, .all-clear {
+            color: white;
+            font-weight: bold; /* Teks lebih tebal untuk penekanan */
+        }
+
+        .operator {
+            background-color: #f672a7; /* Warna operator lebih mencolok */
+        }
+
+        .operator:hover {
+            background-color: #e0568b;
+        }
+
+        .equal-sign {
+            background-color: #c06c84;
+        }
+
+        .equal-sign:hover {
+            background-color: #ab5c6c;
+        }
+
+        .all-clear {
+            background-color: #f381a7;
+        }
+
+        .all-clear:hover {
+            background-color: #e35a8f;
+        }
+
+        .function {
+            background-color: #f78fb3;
+        }
+
+        .function:hover {
+            background-color: #e77a9e;
+        }
+    </style>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" class="calculator-screen" id="expression">
+        <input type="text" class="calculator-screen" id="expression" readonly>
         <div class="calculator-keys">
-            <button type="button" class="function" onclick="appendValue('sin(x)')">sin</button>
-            <button type="button" class="function" onclick="appendValue('cos(x)')">cos</button>
-            <button type="button" class="function" onclick="appendValue('tan(x)')">tan</button>
+            <button type="button" class="function" onclick="appendValue('sin(')">sin</button>
+            <button type="button" class="function" onclick="appendValue('cos(')">cos</button>
+            <button type="button" class="function" onclick="appendValue('tan(')">tan</button>
             <button type="button" class="operator" onclick="appendValue('+')">+</button>
             <button type="button" class="operator" onclick="appendValue('-')">-</button>
-            <button type="button" class="operator" onclick="appendValue('*')">*</button>
+            <button type="button" class="operator" onclick="appendValue('')"></button>
             <button type="button" class="operator" onclick="appendValue('/')">/</button>
-            <button type="button" class="operator" onclick="appendValue('**')">^</button>
+            <button type="button" class="operator" onclick="appendValue('^')">^</button>
+            <button type="button" class="operator" onclick="appendValue('(')">(</button>
+            <button type="button" class="operator" onclick="appendValue(')')">)</button>
+            <button type="button" class="operator" onclick="appendValue('pi')">π</button>
+            <button type="button" class="operator" onclick="appendValue('e')">e</button>
             <button type="button" class="all-clear" onclick="clearScreen()">AC</button>
             <button type="button" class="equal-sign" onclick="calculate()">=</button>
         </div>
     </div>
     <script>
         function appendValue(value) {
-            document.getElementById('expression').value += value;
+            const screen = document.getElementById('expression');
+            screen.value += value;
         }
 
         function clearScreen() {
@@ -43,12 +143,13 @@
                     'expression': expression
                 })
             })
-            .then(response => response.text())
+            .then(response => response.json()) // Assume the server returns JSON
             .then(data => {
-                document.getElementById('expression').value = data;
+                document.getElementById('expression').value = data.result;
             })
             .catch(error => {
                 console.error('Error:', error);
+                document.getElementById('expression').value = 'Error';
             });
         }
     </script>
