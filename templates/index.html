@@ -1,161 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Kalkulus</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>Kalkulator Operasi Matematika</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAu6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
+            font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: #ffe6f2; /* Warna Merah Muda yang soft */
             margin: 0;
-            background-color: #3c3744; /* Warna abu-abu tua sebagai latar belakang */
-            font-family: 'Roboto', sans-serif;
         }
-
+        
         .calculator {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 360px; /* Ukuran lebih kecil */
-            background-color: #fff; /* Latar belakang kalkulator putih */
-            border: 5px solid #e1e1e1; /* Tambahkan border solid yang lebih tebal */
-            padding: 20px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 20px; /* Memperbesar border-radius */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Membuat bayangan lebih tebal */
+            width: 400px; /* Memperbesar lebar kalkulator */
+            margin-top: 50px; /* Memberi jarak atas agar terlihat lebih rapih */
         }
-
-        .calculator-screen {
-            width: 100%;
-            height: 60px; /* Lebih kecil dari sebelumnya */
-            border: none;
-            background-color: #ffe0f0; /* Warna pink lembut */
-            color: #555; /* Warna teks yang lebih lembut */
-            text-align: right;
-            padding: 10px;
-            font-size: 2em; /* Ukuran teks disesuaikan */
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            margin-bottom: 10px;
+        
+        .calculator h1 {
+            text-align: center;
+            color: #ff80bf; /* Warna font menjadi pink */
+            margin-bottom: 20px; /* Menambah jarak bawah */
+            font-size: 28px; /* Memperbesar ukuran font */
         }
-
-        .calculator-keys {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        
+        .calculator #status {
+            text-align: center;
+            font-size: 1.4em; /* Memperbesar ukuran font */
+            margin-bottom: 20px; /* Menambah jarak bawah */
+            color: #ff4d94; /* Warna teks menjadi merah muda yang lebih gelap */
         }
-
-        button {
-            height: 48px; /* Tombol lebih kecil */
-            border: none;
-            background-color: #f9c6d9; /* Warna tombol pink */
-            font-size: 1em; /* Ukuran font yang lebih kecil */
-            color: #333;
-            cursor: pointer;
-            border-radius: 5px; /* Membuat tombol lebih bulat */
+        
+        .calculator select,
+        .calculator input[type="text"],
+        .calculator input[type="number"],
+        .calculator button {
+            width: calc(100% - 40px); /* Mengurangi padding dan margin agar lebih rapih */
+            padding: 12px; /* Memperbesar padding */
+            margin: 10px 0; /* Menambah margin */
+            border: 2px solid #ff80bf; /* Warna border pink */
+            border-radius: 10px; /* Memperbesar border-radius */
+            box-sizing: border-box;
+            background-color: #fff6ff; /* Warna latar belakang lebih terang */
         }
-
-        button:hover {
-            background-color: #f7a8c8; /* Warna hover yang lebih gelap */
-        }
-
-        .operator, .function, .equal-sign, .all-clear {
+        
+        .calculator button {
+            background-color: #ff80bf; /* Warna background pink */
             color: white;
-            font-weight: bold; /* Teks lebih tebal untuk penekanan */
+            border: none;
+            cursor: pointer;
+            font-weight: bold; /* Menambah tebal font */
         }
-
-        .operator {
-            background-color: #f672a7; /* Warna operator lebih mencolok */
+        
+        .calculator button:hover {
+            background-color: #ff99cc; /* Warna hover yang lebih terang */
         }
-
-        .operator:hover {
-            background-color: #e0568b;
+        
+        .calculator #messages {
+            border: 2px solid #ff80bf; /* Warna border pink */
+            background-color: #fff6ff; /* Warna latar belakang lebih terang */
+            padding: 12px; /* Memperbesar padding */
+            height: 200px; /* Memperbesar tinggi */
+            overflow-y: scroll;
+            margin-top: 20px; /* Menambah jarak atas */
         }
-
-        .equal-sign {
-            background-color: #c06c84;
+        
+        .calculator #trigInputs,
+        .calculator #expressionInput {
+            display: none;
         }
-
-        .equal-sign:hover {
-            background-color: #ab5c6c;
+        
+        .calculator input[type="radio"] {
+            display: none;
         }
-
-        .all-clear {
-            background-color: #f381a7;
+        
+        .calculator input[type="radio"] + label {
+            display: inline-block;
+            margin: 10px;
+            padding: 8px 12px; /* Memperbesar padding */
+            border: 2px solid #ff80bf; /* Warna border pink */
+            border-radius: 10px; /* Memperbesar border-radius */
+            cursor: pointer;
+            background-color: #fff6ff; /* Warna latar belakang lebih terang */
         }
-
-        .all-clear:hover {
-            background-color: #e35a8f;
-        }
-
-        .function {
-            background-color: #f78fb3;
-        }
-
-        .function:hover {
-            background-color: #e77a9e;
+        
+        .calculator input[type="radio"]:checked + label {
+            background-color: #ff80bf; /* Warna latar belakang pink */
+            color: white;
+            border-color: #ff80bf; /* Warna border pink */
         }
     </style>
+    <script>
+        let socket;
+        
+        function connect() {
+            socket = new WebSocket("ws://127.0.0.1:11008");
+
+            socket.onopen = function () {
+                console.log("Terhubung ke server.");
+                document.getElementById("status").textContent = "Terhubung";
+            };
+
+            socket.onmessage = function (event) {
+                const message = event.data;
+                const messagesDiv = document.getElementById("messages");
+                const messageElem = document.createElement("div");
+                messageElem.textContent = message;
+                messagesDiv.appendChild(messageElem);
+            };
+
+            socket.onclose = function () {
+                console.log("Terputus dari server.");
+                document.getElementById("status").textContent = "Terputus";
+            };
+
+            socket.onerror = function (error) {
+                console.error("Kesalahan WebSocket: " + error);
+                document.getElementById("status").textContent = "Kesalahan";
+            };
+        }
+
+        function sendMessage() {
+            const choice = document.getElementById("menuChoice").value;
+            let message;
+
+            if (choice == "3") {
+                const trigFunction = document.querySelector(
+                    'input[name="trigFunction"]:checked'
+                ).value;
+                const angle = document.getElementById("angle").value;
+                message = `${choice}:${trigFunction},${angle}`;
+            } else {
+                const expression = document.getElementById("expression").value;
+                message = `${choice}:${expression}`;
+                document.getElementById("expression").value = "";
+            }
+
+            socket.send(message);
+        }
+
+        function updateUI() {
+            const choice = document.getElementById("menuChoice").value;
+            const expressionInput = document.getElementById("expressionInput");
+            const trigInputs = document.getElementById("trigInputs");
+
+            switch (choice) {
+                case "1":
+                case "2":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                case "10":
+                    document.getElementById("expression").placeholder =
+                        "contoh input (x**5)";
+                    trigInputs.style.display = "none";
+                    expressionInput.style.display = "block";
+                    break;
+                case "3":
+                    trigInputs.style.display = "block";
+                    expressionInput.style.display = "none";
+                    break;
+                case "4":
+                    document.getElementById("expression").placeholder =
+                        "contoh input (2*3)";
+                    trigInputs.style.display = "none";
+                    expressionInput.style.display = "block";
+                    break;
+            }
+        }
+
+        window.onload = function () {
+            connect();
+            updateUI();
+        };
+    </script>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" class="calculator-screen" id="expression" readonly>
-        <div class="calculator-keys">
-            <button type="button" class="function" onclick="appendValue('sin(')">sin</button>
-            <button type="button" class="function" onclick="appendValue('cos(')">cos</button>
-            <button type="button" class="function" onclick="appendValue('tan(')">tan</button>
-            <button type="button" class="operator" onclick="appendValue('+')">+</button>
-            <button type="button" class="operator" onclick="appendValue('-')">-</button>
-            <button type="button" class="operator" onclick="appendValue('')"></button>
-            <button type="button" class="operator" onclick="appendValue('/')">/</button>
-            <button type="button" class="operator" onclick="appendValue('^')">^</button>
-            <button type="button" class="operator" onclick="appendValue('(')">(</button>
-            <button type="button" class="operator" onclick="appendValue(')')">)</button>
-            <button type="button" class="operator" onclick="appendValue('pi')">π</button>
-            <button type="button" class="operator" onclick="appendValue('e')">e</button>
-            <button type="button" class="all-clear" onclick="clearScreen()">AC</button>
-            <button type="button" class="equal-sign" onclick="calculate()">=</button>
+        <h1>Kalkulator Matematika</h1>
+        <div id="status">Menghubungkan...</div>
+        <select id="menuChoice" class="form-select" onchange="updateUI()">
+            <option value="1">Turunan Orde Pertama</option>
+            <option value="2">Integral Orde Pertama</option>
+            <option value="3">Fungsi Trigonometri</option>
+            <option value="4">Operasi Matematika Dasar</option>
+            <option value="5">Turunan Orde Kedua</option>
+            <option value="6">Turunan Orde Ketiga</option>
+            <option value="7">Turunan Orde Keempat</option>
+            <option value="8">Integral Orde Kedua</option>
+            <option value="9">Integral Orde Ketiga</option>
+            <option value="10">Integral Orde Keempat</option>
+        </select>
 
-            <!-- Numeric Buttons -->
-            <button type="button" onclick="appendValue('1')">1</button>
-            <button type="button" onclick="appendValue('2')">2</button>
-            <button type="button" onclick="appendValue('3')">3</button>
-            <button type="button" onclick="appendValue('4')">4</button>
-            <button type="button" onclick="appendValue('5')">5</button>
-            <button type="button" onclick="appendValue('6')">6</button>
-            <button type="button" onclick="appendValue('7')">7</button>
-            <button type="button" onclick="appendValue('8')">8</button>
-            <button type="button" onclick="appendValue('9')">9</button>
-            <button type="button" onclick="appendValue('0')">0</button>
-            <button type="button" onclick="appendValue('.')">.</button>
+        <div id="expressionInput">
+            <input type="text" id="expression" class="form-control" placeholder="contoh input (x**5)">
         </div>
+
+        <div id="trigInputs">
+            <div class="form-check">
+                <input type="radio" id="sin" name="trigFunction" value="sin" checked>
+                <label for="sin">sin</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="cos" name="trigFunction" value="cos">
+                <label for="cos">cos</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="tan" name="trigFunction" value="tan">
+                <label for="tan">tan</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="cot" name="trigFunction" value="cot">
+                <label for="cot">cot</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="sec" name="trigFunction" value="sec">
+                <label for="sec">sec</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="cosec" name="trigFunction" value="cosec">
+                <label for="cosec">cosec</label>
+            </div>
+            <input type="number" id="angle" class="form-control" placeholder="Sudut dalam derajat">
+        </div>
+
+        <button onclick="sendMessage()" class="btn btn-primary">Kirim</button>
+
+        <div id="messages"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
-    <script>
-        var socket = io.connect('http://showcase.ittsby.id:11008');
-
-        function appendValue(value) {
-            const screen = document.getElementById('expression');
-            screen.value += value;
-        }
-
-        function clearScreen() {
-            document.getElementById('expression').value = '';
-        }
-
-        function calculate() {
-            const expression = document.getElementById('expression').value;
-
-            socket.emit('calculate_expression', {expression: expression});
-        }
-
-        socket.on('result', function(data) {
-            document.getElementById('expression').value = data.result;
-        });
-    </script>
 </body>
 </html>
