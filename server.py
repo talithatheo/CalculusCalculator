@@ -4,12 +4,6 @@ import asyncio
 import websockets
 import sympy as sp
 import math
-import importlib.util
-
-# Import the websockets module dynamically
-spec = importlib.util.find_spec("websockets")
-websockets = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(websockets)
 
 # Global variables
 clients = set()
@@ -169,15 +163,22 @@ async def broadcast(message):
         await asyncio.gather(*(client.send(message) for client in clients))
 
 # Start the WebSocket server
-start_server = websockets.serve(handle_client, "0.0.0.0", 11008)
+async def main_async():
+    server = await websockets.serve(handle_client, "0.0.0.0", 11008)
+    async with server:
+        await asyncio.Future()  # Run forever
 
 # Main function to initialize the client socket and start the menu choice loop
 def main():
+    # Start the event loop for the WebSocket server in a separate thread
+    server_thread = threading.Thread(target=lambda: asyncio.run(main_async()))
+    server_thread.start()
+
     # Initialize the client socket
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Connect the client to the server
-    client.connect(("0.0.0.0", 11008))  # Ubah alamat koneksi client menjadi 0.0.0.0
+    client.connect(("localhost", 11008))  # Use 'localhost' if running on the same machine
 
     # Start a thread to handle receiving messages from the server
     receive_thread = threading.Thread(target=receive_messages, args=(client,))
@@ -185,10 +186,6 @@ def main():
 
     # Start the menu choice loop
     menu_choice(client)
-
-    # Run the event loop for the WebSocket server
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_forever()
 
 if __name__ == "__main__":
     main()
